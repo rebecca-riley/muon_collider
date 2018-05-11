@@ -24,9 +24,8 @@ def processEvent(cut_file):
         mass[i] = mass[i][0:mass_precision]    #truncate end of mass term
         mass_total += float(mass[i])   #typecast mass to float, incr total
 
-    cut_file.write(str(mass_total)+"\n")    #write mass out, not whole event
-
-#cut_file.write(event)          #writes all events back out with no processing
+    if mass_total>1 and mass_total<2:
+        cut_file.write(event)       #write out full event meeting cut criteria
 
 
 # EXECUTION SUBROUTINE
