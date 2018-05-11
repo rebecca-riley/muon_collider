@@ -1,11 +1,33 @@
 # VARIABLE DEFINITIONS
-file_in = 'composite_100k.lhe'
-file_out = 'composite_cut.lhe'
+file_in = 'a.lhe'
+file_out = 'a_cut.lhe'
+
+# magic number constants for event processing
+line_results_start = 4
+num_results = 3
+mass_index = 10
+mass_precision = 10
 
 # FUNCTION DEFINITIONS
 # writes events that we want to keep to the file
 def processEvent(cut_file):
-    cut_file.write(event)       #writes all events back out with no processing
+    data = event.splitlines()   #store event line by line
+    data = data[line_results_start:]  #throw away irrelevant beginning lines
+
+    mass_total = 0              #test writes mass total to output file
+    test = ['','','']
+    mass = ['','','']
+
+    for i in range(num_results):    #for each collision product
+        test[i] = data[i].split()   #isolate each column
+        mass[i] = test[i][mass_index]       #pick out mass term
+        mass[i] = mass[i][0:mass_precision]    #truncate end of mass term
+        mass_total += float(mass[i])   #typecast mass to float, incr total
+
+    cut_file.write(str(mass_total)+"\n")    #write mass out, not whole event
+
+#cut_file.write(event)          #writes all events back out with no processing
+
 
 # EXECUTION SUBROUTINE
 # open input/output files
