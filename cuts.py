@@ -16,9 +16,14 @@ energy_index = 9
 mass_index = 10
 spin_index = 11
 
+null_particle = '0'
 photon = '22'
 mu_plus = '13'
 mu_minus = '-13'
+
+initial_event = '-1'
+mid_event = '2'
+final_event = '1'
 
 #### FUNCTION DEFINITIONS ####
 #--- cut functions ---#
@@ -93,22 +98,36 @@ def extractEventData(event_data,index_to_extract):
         extraction.append(float(row.split()[index_to_extract]))  #conversion to float
     return extraction           #list of extraced numbers
 
-def extractInitialEvents(event_data,index_to_extract,particle_code):
-    event_initial = []
+# hidden function to return a list of data points for particles meeting identity,
+# index, and state requirements
+def _extractEventSubset(event_data,index_to_extract,event_state,particle_code):
+    event_subset = []
     for row in event_data:
         element_list = row.split()
-        if element_list[initial_final_index] == '-1' and element_list[particle_identity_index] == particle_code:
-            event_initial.append(row)
-    return extractEventData(event_initial,index_to_extract)
+        if element_list[initial_final_index] == event_state:    #if in correct state
+            #if no particle stated or particle match is correct
+            if particle_code == null_particle or element_list[particle_identity_index] == particle_code:
+                event_subset.append(row)        #collect desired data
+    return extractEventData(event_subset,index_to_extract)
 
-#consolidate with initial events
-def extractFinalEvents(event_data,index_to_extract,particle_code):
-    event_initial = []
-    for row in event_data:
-        element_list = row.split()
-        if element_list[initial_final_index] == '1' and element_list[particle_identity_index] == particle_code:
-            event_initial.append(row)
-    return extractEventData(event_initial,index_to_extract)
+# returns a list of data points associated with initial particles for a specified index
+# optional: specify particle identity; if no particle specified, returns all initial
+#           events
+def extractInitialEvents(event_data,index_to_extract,particle_code=null_particle):
+    return _extractEventSubset(event_data,index_to_extract,initial_event,particle_code)
+
+# returns a list of data points associated with final particles for a specified index
+# optional: specify particle identity; if no particle specified, returns all final
+#           events
+def extractFinalEvents(event_data,index_to_extract,particle_code=null_particle):
+    return _extractEventSubset(event_data,index_to_extract,final_event,particle_code)
+
+# returns a list of data points associated with intermediate particles for a specified index
+# optional: specify particle identity; if no particle specified, returns all
+#           intermediate events
+def extractIntermediateEvents(event_data,index_to_extract,particle_code=null_particle):
+    return _extractEventSubset(event_data,index_to_extract,mid_event,particle_code)
+
 
 #### EXECUTION SUBROUTINE ####
 # open input/output files
