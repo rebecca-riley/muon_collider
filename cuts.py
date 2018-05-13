@@ -18,8 +18,11 @@ spin_index = 11
 
 null_particle = '0'
 photon = '22'
-mu_plus = '13'
-mu_minus = '-13'
+mu_minus = '13'
+mu_plus = '-13'
+tau_minus = '15'
+tau_plus = '-15'
+higgs = '25'
 
 initial_event = '-1'
 mid_event = '2'
