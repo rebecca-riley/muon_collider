@@ -1,3 +1,7 @@
+#### IMPORT DECLARATIONS ####
+from vector import Vector
+import math
+
 #### VARIABLE DEFINITIONS ####
 file_in = 'composite_100k.lhe'
 file_out = 'composite_cut.lhe'
@@ -12,21 +16,57 @@ energy_index = 9
 mass_index = 10
 spin_index = 11
 
+photon = '22'
+mu_plus = '13'
+mu_minus = '-13'
+
 #### FUNCTION DEFINITIONS ####
 #--- cut functions ---#
 #calculates invariant mass for each event
 def getInvariantMass(event_data):
-    x_p = extractEventData(event_data,x_index)
-    y_p = extractEventData(event_data,y_index)
-    z_p = extractEventData(event_data,z_index)
-    energy = extractEventData(event_data,energy_index)
+    x_p = extractFinalEvents(event_data,x_index,photon)[0]
+    y_p = extractFinalEvents(event_data,y_index,photon)[0]
+    z_p = extractFinalEvents(event_data,z_index,photon)[0]
+    energy = extractFinalEvents(event_data,energy_index,photon)[0]
 
-    return sum(energy)**2 - sum(x_p)**2 - sum(y_p)**2 - sum(z_p)**2
+    x_p += extractFinalEvents(event_data,x_index,mu_plus)[0]
+    y_p += extractFinalEvents(event_data,y_index,mu_plus)[0]
+    z_p += extractFinalEvents(event_data,z_index,mu_plus)[0]
+    energy += extractFinalEvents(event_data,energy_index,mu_plus)[0]
+
+    x_p += extractFinalEvents(event_data,x_index,mu_minus)[0]
+    y_p += extractFinalEvents(event_data,y_index,mu_minus)[0]
+    z_p += extractFinalEvents(event_data,z_index,mu_minus)[0]
+    energy += extractFinalEvents(event_data,energy_index,mu_minus)[0]
+
+    return math.sqrt(energy**2 - x_p**2 - y_p**2 - z_p**2)
+
+def getAngle(event_data):
+    px_photon = extractFinalEvents(event_data,x_index,photon)
+    py_photon = extractFinalEvents(event_data,y_index,photon)
+    pz_photon = extractFinalEvents(event_data,z_index,photon)
+
+    px_mu_plus = extractFinalEvents(event_data,x_index,mu_plus)
+    py_mu_plus = extractFinalEvents(event_data,y_index,mu_plus)
+    pz_mu_plus = extractFinalEvents(event_data,z_index,mu_plus)
+
+
+    # test to make sure lengths are the same
+#    for i in range(len(px_photon)):
+    vec_photon = Vector(px_photon[0],py_photon[0],pz_photon[0])
+#    print(vec_photon)
+
+#    for i in range(len(px_mu_plus)):
+    vec_mu_plus = Vector(px_mu_plus[0],py_mu_plus[0],pz_mu_plus[0])
+#    print(vec_mu_plus)
+
+    return vec_mu_plus.inner(vec_photon)/(vec_mu_plus.norm()*vec_photon.norm())
 
 #--- processing functions ---#
 # writes events that we want to keep to the file
 def processEvent(cut_file,event):
     event_block = event.splitlines()    #store event line by line
+#    cut_file.write(str(getAngle(getEventData(event_block)))+'\n')
     cut_file.write(str(getInvariantMass(getEventData(event_block)))+'\n')
                                         #writes invariant mass to file
 
@@ -53,6 +93,22 @@ def extractEventData(event_data,index_to_extract):
         extraction.append(float(row.split()[index_to_extract]))  #conversion to float
     return extraction           #list of extraced numbers
 
+def extractInitialEvents(event_data,index_to_extract,particle_code):
+    event_initial = []
+    for row in event_data:
+        element_list = row.split()
+        if element_list[initial_final_index] == '-1' and element_list[particle_identity_index] == particle_code:
+            event_initial.append(row)
+    return extractEventData(event_initial,index_to_extract)
+
+#consolidate with initial events
+def extractFinalEvents(event_data,index_to_extract,particle_code):
+    event_initial = []
+    for row in event_data:
+        element_list = row.split()
+        if element_list[initial_final_index] == '1' and element_list[particle_identity_index] == particle_code:
+            event_initial.append(row)
+    return extractEventData(event_initial,index_to_extract)
 
 #### EXECUTION SUBROUTINE ####
 # open input/output files
