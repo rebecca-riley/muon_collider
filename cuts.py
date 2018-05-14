@@ -2,6 +2,7 @@
 from vector import Vector
 import math
 
+
 #### VARIABLE DEFINITIONS ####
 file_in = 'composite_100k.lhe'
 file_out = 'composite_cut.lhe'
@@ -9,28 +10,38 @@ file_out = 'composite_cut.lhe'
 # magic number constants for event processing
 particle_identity_index = 0
 initial_final_index = 1
-x_index = 6
-y_index = 7
-z_index = 8
-energy_index = 9
+x_index, y_index, z_index, energy_index = 6, 7, 8, 9
 mass_index = 10
 spin_index = 11
 
 null_particle = '0'
 photon = '22'
-mu_minus = '13'
-mu_plus = '-13'
-tau_minus = '15'
-tau_plus = '-15'
+mu_minus, mu_plus = '13', '-13'
+tau_minus, tau_plus = '15', '-15'
 higgs = '25'
 
 initial_event = '-1'
 mid_event = '2'
 final_event = '1'
 
+
 #### FUNCTION DEFINITIONS ####
+
 #--- cut functions ---#
-#calculates invariant mass for each event
+# cuts on events and writes ones that we want to keep to the file
+def cutOnEvent(cut_file,event):
+    event_block = event.splitlines()    #store event line by line
+    cut_file.write(str(getAngle(getEventData(event_block),final_event,photon,mu_plus))+'\n')
+#    cut_file.write(str(getInvariantMass(getEventData(event_block)))+'\n')
+                                        #writes invariant mass to file
+
+#    if mass_total>1 and mass_total<2:
+#        cut_file.write(event)       #write out full event meeting cut criteria
+
+
+#--- get functions ---#
+
+# returns invariant mass for an event
 def getInvariantMass(event_data):
     indices, sum_vec = [x_index,y_index,z_index,energy_index], [0,0,0,0]
 
@@ -39,6 +50,7 @@ def getInvariantMass(event_data):
 
     # return invariant mass: E^2 - x^2 - y^2 - z^2
     return math.sqrt(sum_vec[3]**2 - sum_vec[0]**2 - sum_vec[1]**2 - sum_vec[2]**2)
+
 
 # returns the angle between two specified particles in a given state
 # optional: if you have more than one particle in a given state (e.g. your process
@@ -49,7 +61,8 @@ def getInvariantMass(event_data):
 #           IndexError if requested which_particle index does not exist (this might
 #           occur if there are less particles in the given state than the requested
 #           index)
-def getAngle(event_data,event_state,particle1_code, particle2_code,which_particle1=0,which_particle2=0):
+def getAngle(event_data,event_state,particle1_code, particle2_code,which_particle1=0,
+             which_particle2=0):
     p1, p2 = [], []
 
     for index in [x_index,y_index,z_index]:
@@ -67,16 +80,8 @@ def getAngle(event_data,event_state,particle1_code, particle2_code,which_particl
 
     return vec1.inner(vec2)/(vec1.norm()*vec2.norm())
 
-#--- processing functions ---#
-# writes events that we want to keep to the file
-def processEvent(cut_file,event):
-    event_block = event.splitlines()    #store event line by line
-    cut_file.write(str(getAngle(getEventData(event_block),final_event,photon,mu_plus))+'\n')
-#    cut_file.write(str(getInvariantMass(getEventData(event_block)))+'\n')
-                                        #writes invariant mass to file
 
-#    if mass_total>1 and mass_total<2:
-#        cut_file.write(event)       #write out full event meeting cut criteria
+#--- extraction functions ---#
 
 # returns list of rows (strings) containing collision data
 # event block is the entire block of event text, from <event> to <\event>
@@ -106,7 +111,8 @@ def _extractEventSubset(event_data,index_to_extract,event_state,particle_code):
         element_list = row.split()
         if element_list[initial_final_index] == event_state:    #if in correct state
             #if no particle stated or particle match is correct
-            if particle_code == null_particle or element_list[particle_identity_index] == particle_code:
+            if particle_code == null_particle or \
+            element_list[particle_identity_index] == particle_code:
                 event_subset.append(row)        #collect desired data
     return extractEventData(event_subset,index_to_extract)
 
@@ -149,7 +155,7 @@ for line in event_file:
             event += line
         if line == '</event>\n':    #once event ends, process the data in the event,
             in_event = False        #reset the in_event flag, and clear storage str
-            processEvent(cut_file,event)
+            cutOnEvent(cut_file,event)
             event = ''
 #            contnu = False         #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
 
