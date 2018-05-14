@@ -20,9 +20,9 @@ mu_minus, mu_plus = '13', '-13'
 tau_minus, tau_plus = '15', '-15'
 higgs = '25'
 
-initial_event = '-1'
-mid_event = '2'
-final_event = '1'
+initial_state = '-1'
+mid_state = '2'
+final_state = '1'
 
 
 #### FUNCTION DEFINITIONS ####
@@ -31,8 +31,8 @@ final_event = '1'
 # cuts on events and writes ones that we want to keep to the file
 def cutOnEvent(cut_file,event):
     event_block = event.splitlines()    #store event line by line
-#    cut_file.write(str(getAngle(getEventData(event_block),final_event,photon,mu_plus))+'\n')
-    cut_file.write(str(getInvariantMass(getEventData(event_block),final_event))+'\n')
+#    cut_file.write(str(getAngle(getEventData(event_block),final_state,photon,mu_plus))+'\n')
+    cut_file.write(str(getInvariantMass(getEventData(event_block),final_state))+'\n')
                                         #writes invariant mass to file
 
 #    if mass_total>1 and mass_total<2:
@@ -121,19 +121,19 @@ def _extractEventSubset(event_data,index_to_extract,event_state,particle_code):
 # optional: specify particle identity; if no particle specified, returns all initial
 #           events
 def extractInitialEvents(event_data,index_to_extract,particle_code=null_particle):
-    return _extractEventSubset(event_data,index_to_extract,initial_event,particle_code)
+    return _extractEventSubset(event_data,index_to_extract,initial_state,particle_code)
 
 # returns a list of data points associated with final particles for a specified index
 # optional: specify particle identity; if no particle specified, returns all final
 #           events
 def extractFinalEvents(event_data,index_to_extract,particle_code=null_particle):
-    return _extractEventSubset(event_data,index_to_extract,final_event,particle_code)
+    return _extractEventSubset(event_data,index_to_extract,final_state,particle_code)
 
 # returns a list of data points associated with intermediate particles for a specified index
 # optional: specify particle identity; if no particle specified, returns all
 #           intermediate events
 def extractIntermediateEvents(event_data,index_to_extract,particle_code=null_particle):
-    return _extractEventSubset(event_data,index_to_extract,mid_event,particle_code)
+    return _extractEventSubset(event_data,index_to_extract,mid_state,particle_code)
 
 
 #### EXECUTION SUBROUTINE ####
