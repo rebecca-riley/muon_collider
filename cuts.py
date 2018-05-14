@@ -40,33 +40,39 @@ def getInvariantMass(event_data):
     # return invariant mass: E^2 - x^2 - y^2 - z^2
     return math.sqrt(sum_vec[3]**2 - sum_vec[0]**2 - sum_vec[1]**2 - sum_vec[2]**2)
 
-def getAngle(event_data):
-    px_photon = extractFinalEvents(event_data,x_index,photon)
-    py_photon = extractFinalEvents(event_data,y_index,photon)
-    pz_photon = extractFinalEvents(event_data,z_index,photon)
+# returns the angle between two specified particles in a given state
+# optional: if you have more than one particle in a given state (e.g. your process
+#           creates two photons), you can specify which of the two photons you want
+#           to consider with the which_particle parameter; default value is the first
+#           particle found
+# raises:   ValueError if no events found matching input parameters
+#           IndexError if requested which_particle index does not exist (this might
+#           occur if there are less particles in the given state than the requested
+#           index)
+def getAngle(event_data,event_state,particle1_code, particle2_code,which_particle1=0,which_particle2=0):
+    p1, p2 = [], []
 
-    px_mu_plus = extractFinalEvents(event_data,x_index,mu_plus)
-    py_mu_plus = extractFinalEvents(event_data,y_index,mu_plus)
-    pz_mu_plus = extractFinalEvents(event_data,z_index,mu_plus)
+    for index in [x_index,y_index,z_index]:
+        subset1 = _extractEventSubset(event_data,index,event_state,particle1_code)
+        subset2 = _extractEventSubset(event_data,index,event_state,particle2_code)
+        if len(subset1) == 0 or len(subset2) == 0:
+            raise ValueError('no events found matching the given particle/state')
+        if which_particle1 >= len(subset1) or which_particle2 >= len(subset2):
+            raise IndexError('particle instance index out of range')
+        p1.append(subset1[which_particle1])
+        p2.append(subset2[which_particle2])
 
+    vec1 = Vector(p1[0],p1[1],p1[2])
+    vec2 = Vector(p2[0],p2[1],p2[2])
 
-    # test to make sure lengths are the same
-#    for i in range(len(px_photon)):
-    vec_photon = Vector(px_photon[0],py_photon[0],pz_photon[0])
-#    print(vec_photon)
-
-#    for i in range(len(px_mu_plus)):
-    vec_mu_plus = Vector(px_mu_plus[0],py_mu_plus[0],pz_mu_plus[0])
-#    print(vec_mu_plus)
-
-    return vec_mu_plus.inner(vec_photon)/(vec_mu_plus.norm()*vec_photon.norm())
+    return vec1.inner(vec2)/(vec1.norm()*vec2.norm())
 
 #--- processing functions ---#
 # writes events that we want to keep to the file
 def processEvent(cut_file,event):
     event_block = event.splitlines()    #store event line by line
-#    cut_file.write(str(getAngle(getEventData(event_block)))+'\n')
-    cut_file.write(str(getInvariantMass(getEventData(event_block)))+'\n')
+    cut_file.write(str(getAngle(getEventData(event_block),final_event,photon,mu_plus))+'\n')
+#    cut_file.write(str(getInvariantMass(getEventData(event_block)))+'\n')
                                         #writes invariant mass to file
 
 #    if mass_total>1 and mass_total<2:
