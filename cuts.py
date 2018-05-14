@@ -32,22 +32,13 @@ final_event = '1'
 #--- cut functions ---#
 #calculates invariant mass for each event
 def getInvariantMass(event_data):
-    x_p = extractFinalEvents(event_data,x_index,photon)[0]
-    y_p = extractFinalEvents(event_data,y_index,photon)[0]
-    z_p = extractFinalEvents(event_data,z_index,photon)[0]
-    energy = extractFinalEvents(event_data,energy_index,photon)[0]
+    indices, sum_vec = [x_index,y_index,z_index,energy_index], [0,0,0,0]
 
-    x_p += extractFinalEvents(event_data,x_index,mu_plus)[0]
-    y_p += extractFinalEvents(event_data,y_index,mu_plus)[0]
-    z_p += extractFinalEvents(event_data,z_index,mu_plus)[0]
-    energy += extractFinalEvents(event_data,energy_index,mu_plus)[0]
+    for i in range(len(indices)):   #for each 4p index, extract & sum all final values
+        sum_vec[i] = sum(extractFinalEvents(event_data,indices[i]))
 
-    x_p += extractFinalEvents(event_data,x_index,mu_minus)[0]
-    y_p += extractFinalEvents(event_data,y_index,mu_minus)[0]
-    z_p += extractFinalEvents(event_data,z_index,mu_minus)[0]
-    energy += extractFinalEvents(event_data,energy_index,mu_minus)[0]
-
-    return math.sqrt(energy**2 - x_p**2 - y_p**2 - z_p**2)
+    # return invariant mass: E^2 - x^2 - y^2 - z^2
+    return math.sqrt(sum_vec[3]**2 - sum_vec[0]**2 - sum_vec[1]**2 - sum_vec[2]**2)
 
 def getAngle(event_data):
     px_photon = extractFinalEvents(event_data,x_index,photon)
