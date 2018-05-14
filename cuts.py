@@ -24,6 +24,7 @@ initial_state = '-1'
 mid_state = '2'
 final_state = '1'
 
+k=0                 #DEBUG
 
 #### FUNCTION DEFINITIONS ####
 
@@ -32,10 +33,16 @@ final_state = '1'
 def cutOnEvent(cut_file,event):
     event_block = event.splitlines()    #store event line by line
 #    cut_file.write(str(getAngle(getEventData(event_block),final_state,photon,mu_plus))+'\n')
-    cut_file.write(str(getInvariantMass(getEventData(event_block),final_state))+'\n')
-                                        #writes invariant mass to file
 
-#    if mass_total>1 and mass_total<2:
+    inv_mass = getInvariantMass(getEventData(event_block),final_state)
+    if inv_mass>130 or inv_mass<120:
+        return
+    
+    cut_file.write(str(inv_mass)+'\n')
+    global k            #DEBUG
+    k+=1                #DEBUG
+
+
 #        cut_file.write(event)       #write out full event meeting cut criteria
 
 
@@ -160,5 +167,6 @@ for line in event_file:
             event = ''
 #            contnu = False         #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
 
+print(k)                           #DEBUG
 event_file.close()              #close open files
 cut_file.close()
