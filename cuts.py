@@ -31,8 +31,8 @@ final_event = '1'
 # cuts on events and writes ones that we want to keep to the file
 def cutOnEvent(cut_file,event):
     event_block = event.splitlines()    #store event line by line
-    cut_file.write(str(getAngle(getEventData(event_block),final_event,photon,mu_plus))+'\n')
-#    cut_file.write(str(getInvariantMass(getEventData(event_block)))+'\n')
+#    cut_file.write(str(getAngle(getEventData(event_block),final_event,photon,mu_plus))+'\n')
+    cut_file.write(str(getInvariantMass(getEventData(event_block),final_event))+'\n')
                                         #writes invariant mass to file
 
 #    if mass_total>1 and mass_total<2:
@@ -41,12 +41,13 @@ def cutOnEvent(cut_file,event):
 
 #--- get functions ---#
 
-# returns invariant mass for an event
-def getInvariantMass(event_data):
+# returns invariant mass for specified state of a single event
+def getInvariantMass(event_data,event_state):
     indices, sum_vec = [x_index,y_index,z_index,energy_index], [0,0,0,0]
 
     for i in range(len(indices)):   #for each 4p index, extract & sum all final values
-        sum_vec[i] = sum(extractFinalEvents(event_data,indices[i]))
+        sum_vec[i] = sum(_extractEventSubset(event_data,indices[i],event_state,
+                         null_particle))
 
     # return invariant mass: E^2 - x^2 - y^2 - z^2
     return math.sqrt(sum_vec[3]**2 - sum_vec[0]**2 - sum_vec[1]**2 - sum_vec[2]**2)
