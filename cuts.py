@@ -31,30 +31,48 @@ k=0                 #DEBUG
 #--- cut functions ---#
 # cuts on events and writes ones that we want to keep to the file
 def cutOnEvent(cut_file,event):
-    event_block = event.splitlines()    #store event line by line
-#    cut_file.write(str(getAngle(getEventData(event_block),final_state,photon,mu_plus))+'\n')
+    event_block = event.splitlines()        #store event line by line
+    event_data = getEventData(event_block)  #retrieve relevant data
 
-    inv_mass = getInvariantMass(getEventData(event_block),final_state)
-    if inv_mass>130 or inv_mass<120:
+    # mass cut on all final elements
+    inv_mass_final = getInvariantMass(event_data,final_state)
+    if inv_mass_final<120 or inv_mass_final>130:
         return
     
-    cut_file.write(str(inv_mass)+'\n')
+    # mass cut on two final elements
+    inv_mass_mu_mu = getInvariantMass(event_data,final_state,[mu_plus,mu_minus])
+    if inv_mass_mu_mu>85 and inv_mass_mu_mu<95:
+        return
+
+    # angle cut on angle between final photon and associated fermions
+    if min(abs(getAngle(event_data,final_state,photon,mu_plus)),
+           abs(getAngle(event_data,final_state,photon,mu_minus))) < 0.2:
+        return
+
+#    cut_file.write(str(min(abs(angle_photon_mu_minus),abs(angle_photon_mu_plus)))+'\n')
+    cut_file.write(event)       #write out full event meet: ing cut criteria
+
     global k            #DEBUG
     k+=1                #DEBUG
-
-
-#        cut_file.write(event)       #write out full event meeting cut criteria
 
 
 #--- get functions ---#
 
 # returns invariant mass for specified state of a single event
-def getInvariantMass(event_data,event_state):
+# optional: if you want to get the invariant mass for specific particles, you can pass
+#           in a list with their particle codes; default will return the invariant
+#           mass for all particles in given state
+def getInvariantMass(event_data,event_state,particle_list=[]):
     indices, sum_vec = [x_index,y_index,z_index,energy_index], [0,0,0,0]
 
     for i in range(len(indices)):   #for each 4p index, extract & sum all final values
-        sum_vec[i] = sum(_extractEventSubset(event_data,indices[i],event_state,
-                         null_particle))
+        if particle_list == []:
+            sum_vec[i] = sum(_extractEventSubset(event_data,indices[i],event_state,
+                             null_particle))
+        else:
+            for particle in particle_list:
+                sum_vec[i] += sum(_extractEventSubset(event_data,indices[i],
+                                  event_state,particle))
 
     # return invariant mass: E^2 - x^2 - y^2 - z^2
     return math.sqrt(sum_vec[3]**2 - sum_vec[0]**2 - sum_vec[1]**2 - sum_vec[2]**2)
