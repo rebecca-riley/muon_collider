@@ -46,11 +46,13 @@ def cutOnEvent(cut_file,event):
 
     # angle cut on angle between final photon and associated fermions
     if min(abs(getAngle(event_data,final_state,photon,mu_plus)),
-           abs(getAngle(event_data,final_state,photon,mu_minus))) < 0.2:
+           abs(getAngle(event_data,final_state,photon,mu_minus))) < 30:
         return
 
+#    angle_photon_mu_minus = getAngle(event_data,final_state,photon,mu_minus)
+#    angle_photon_mu_plus = getAngle(event_data,final_state,photon,mu_plus)
 #    cut_file.write(str(min(abs(angle_photon_mu_minus),abs(angle_photon_mu_plus)))+'\n')
-    cut_file.write(event)       #write out full event meet: ing cut criteria
+    cut_file.write(event)       #write out full event meeting cut criteria
 
     global k            #DEBUG
     k+=1                #DEBUG
@@ -78,7 +80,7 @@ def getInvariantMass(event_data,event_state,particle_list=[]):
     return math.sqrt(sum_vec[3]**2 - sum_vec[0]**2 - sum_vec[1]**2 - sum_vec[2]**2)
 
 
-# returns the angle between two specified particles in a given state
+# returns the angle in degrees between two specified particles in a given state
 # optional: if you have more than one particle in a given state (e.g. your process
 #           creates two photons), you can specify which of the two photons you want
 #           to consider with the which_particle parameter; default value is the first
@@ -104,7 +106,7 @@ def getAngle(event_data,event_state,particle1_code, particle2_code,which_particl
     vec1 = Vector(p1[0],p1[1],p1[2])
     vec2 = Vector(p2[0],p2[1],p2[2])
 
-    return vec1.inner(vec2)/(vec1.norm()*vec2.norm())
+    return math.degrees(math.acos(vec1.inner(vec2)/(vec1.norm()*vec2.norm())))
 
 
 #--- extraction functions ---#
