@@ -26,6 +26,7 @@ final_state = '1'
 
 k=0                 #DEBUG
 
+
 #### FUNCTION DEFINITIONS ####
 
 #--- cut functions ---#
@@ -164,29 +165,34 @@ def extractIntermediateEvents(event_data,index_to_extract,particle_code=null_par
 
 
 #### EXECUTION SUBROUTINE ####
-# open input/output files
-event_file = open(file_in,'r')  #read only mode for input
-cut_file = open(file_out,'w')   #write only mode for output
+def main():
+    # open input/output files
+    event_file = open(file_in,'r')  #read only mode for input
+    cut_file = open(file_out,'w')   #write only mode for output
 
-in_event = False                #flag to indicate whether in event block
-event = ''                      #string to store event block data
-#contnu = True                  #DEBUG -- ALLOWS PROGRAM TO RUN OVER ONE EVENT ONLY
+    in_event = False                #flag to indicate whether in event block
+    event = ''                      #string to store event block data
+    #contnu = True                  #DEBUG -- ALLOWS PROGRAM TO RUN OVER ONE EVENT ONLY
 
-# line processing loop
-for line in event_file:
-#    if contnu == True:             #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
-        if line == '<event>\n':     #search file for start of event block
-            in_event = True
-        if in_event == False:       #if not in event block, write line back out
-            cut_file.write(line)    #to file
-        if in_event == True:        #if in event, collect info in event string
-            event += line
-        if line == '</event>\n':    #once event ends, process the data in the event,
-            in_event = False        #reset the in_event flag, and clear storage str
-            cutOnEvent(cut_file,event)
-            event = ''
-#            contnu = False         #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
+    # line processing loop
+    for line in event_file:
+    #    if contnu == True:             #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
+            if line == '<event>\n':     #search file for start of event block
+                in_event = True
+            if in_event == False:       #if not in event block, write line back out
+                cut_file.write(line)    #to file
+            if in_event == True:        #if in event, collect info in event string
+                event += line
+            if line == '</event>\n':    #once event ends, process the data in the event,
+                in_event = False        #reset the in_event flag, and clear storage str
+                cutOnEvent(cut_file,event)
+                event = ''
+    #            contnu = False         #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
 
-print(k)                           #DEBUG
-event_file.close()              #close open files
-cut_file.close()
+    print(k)                           #DEBUG
+
+    event_file.close()              #close open files
+    cut_file.close()
+
+if __name__ == "__main__":
+    main()
