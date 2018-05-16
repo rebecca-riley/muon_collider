@@ -194,5 +194,5 @@ def main():
     event_file.close()              #close open files
     cut_file.close()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
