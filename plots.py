@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import cuts
 
 num_bins = 150
+k=0
 
 def main():
     file_input = input('Enter event files to plot: ').split()
@@ -12,7 +13,7 @@ def main():
         try:
             f = open(file,'r')
             file_read.append(f)
-            events.append(cuts.processEvents(f))
+            events = cuts.processEvents(f)
         except IOError:
             print(file + ' not found. Try again with corrected input.')
             return
@@ -20,7 +21,7 @@ def main():
     if len(events) == 0:
         print('No events read')
         return 
-    print(len(events[0]))
+    print(len(events))
 
     plots = input('Enter desired plots. Type \'help\' for options. ').split()
 
@@ -61,16 +62,16 @@ def main():
 
 
 def plotFinalInvariantMass(events,particle_list=[]):
-    plot(extractInvariantMass(events,'1',particle_list),'Final invariant mass histogram','Invariant mass')
+    plot(extractInvariantMass(events,cuts.final_state,particle_list),'Final invariant mass histogram','Invariant mass')
 
 def plotInitialInvariantMass(events,particle_list=[]):
-    plot(extractInvariantMass(events,'-1',particle_list),'Initial invariant mass histogram','Invariant mass')
+    plot(extractInvariantMass(events,cuts.initial_state,particle_list),'Initial invariant mass histogram','Invariant mass')
 
 def plotFinalAngle(events,particle_list):
-    plot(extractAngle(events,'1',particle_list),'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
+    plot(extractAngle(events,cuts.final_state,particle_list),'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
 
 def plotInitialAngle(events,particle_list):
-    plot(extractAngle(events,'-1',particle_list),'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
+    plot(extractAngle(events,cuts.initial_state,particle_list),'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
 
 def extractInvariantMass(events,state,particle_list=[]):
     return extractEvent(cuts.getInvariantMass,events,state,particle_list)
@@ -80,14 +81,18 @@ def extractAngle(events,state,particle_list):
 
 def extractEvent(fctn,events,state,particle_list):
     _event = []
-    for i in range(len(events)):
-        temp = []
-        for event in events[i]:
-            if fctn == cuts.getAngle:
-                temp.append(fctn(event,state,particle_list[0],particle_list[1]))
-            else:
-                temp.append(fctn(event,state,particle_list))
-        _event.append(temp)
+    temp = []
+    for event in events:
+        event_data = cuts.getEventData(event)  #retrieve relevant data
+        if fctn == cuts.getAngle:
+            temp.append(fctn(event_data,state,particle_list[0],particle_list[1]))
+        else:
+            temp.append(fctn(event_data,state,particle_list))
+        global k
+        k += 1
+        if k%10000 == 0:
+            print(k)
+    _event.append(temp)
     return _event
 
 def plot(data,title,x_label):
@@ -107,4 +112,3 @@ def plot(data,title,x_label):
 
 if __name__ == '__main__':
     main()
-
