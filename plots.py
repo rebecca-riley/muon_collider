@@ -13,21 +13,31 @@ def main():
         try:
             f = open(file,'r')
             file_read.append(f)
-            events = cuts.processEvents(f)
         except IOError:
             print(file + ' not found. Try again with corrected input.')
             return
 
+    for file in file_read:
+        events.append(cuts.processEvents(file))
+
     if len(events) == 0:
         print('No events read')
-        return 
-    print(len(events))
+        return
+    else:
+        total_events = 0
+        for event in events:
+            total_events += len(event)
+        print(str(total_events) + ' events read.')
 
-    plots = input('Enter desired plots. Type \'help\' for options. ').split()
+    plots = input('Enter desired plots. Type \'help\' for options or \'quit\' to ' +
+                  'exit. ').split()
 
     while len(plots) == 0:
         plots = input('No plots specified. Enter the tags for the desired plots. Type'
                       ' \'help\' for options. ').split()
+
+    if plots[0] == 'quit':
+        return
 
     if plots[0] == 'help':
         print('[Options]')
@@ -38,8 +48,6 @@ def main():
         print('final angle between particles: aglfin')
         print('initial angle between particles: aglinit')
         plots = input('Enter parameter to plot: ').split()
-
-    # num_bins = int(input('Number of bins? '))
 
     if 'massfin' in plots:
         plotFinalInvariantMass(events)
