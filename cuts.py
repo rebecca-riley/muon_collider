@@ -24,16 +24,16 @@ initial_state = '-1'
 mid_state = '2'
 final_state = '1'
 
-k=0                 #DEBUG
+k=0                     #DEBUG
 
 
 #### FUNCTION DEFINITIONS ####
 
 #--- cut functions ---#
+
 # cuts on events and writes ones that we want to keep to the file
 def cutOnEvent(cut_file,event):
-    event_block = event.splitlines()        #store event line by line
-    event_data = getEventData(event_block)  #retrieve relevant data
+    event_data = getEventData(event)  #retrieve relevant data
 
     # mass cut on all final elements
     inv_mass_final = getInvariantMass(event_data,final_state)
@@ -50,11 +50,9 @@ def cutOnEvent(cut_file,event):
            abs(getAngle(event_data,final_state,photon,mu_minus))) < 30:
         return
 
-#    angle_photon_mu_minus = getAngle(event_data,final_state,photon,mu_minus)
-#    angle_photon_mu_plus = getAngle(event_data,final_state,photon,mu_plus)
-#    cut_file.write(str(min(abs(angle_photon_mu_minus),abs(angle_photon_mu_plus)))+'\n')
     cut_file.write(event)       #write out full event meeting cut criteria
 
+    # number of events remaining
     global k            #DEBUG
     k+=1                #DEBUG
 
@@ -115,7 +113,8 @@ def getAngle(event_data,event_state,particle1_code, particle2_code,which_particl
 # returns list of rows (strings) containing collision data
 # event block is the entire block of event text, from <event> to <\event>
 # event data is the rows in the event block containing collision data
-def getEventData(event_block):
+def getEventData(event):
+    event_block = event.splitlines()        #store event line by line
     i = 1                       #data[0] = <event>; data[1] = event info
     while(i<len(event_block)):  #search for line starting in '<' (end of event block)
         if event_block[i][0] == '<':
@@ -165,6 +164,7 @@ def extractIntermediateEvents(event_data,index_to_extract,particle_code=null_par
 
 
 #--- processing functions ---#
+
 # returns events from lhe file in a list of strings
 def processEvents(event_file,cut_file=None):
     in_event = False                #flag to indicate whether in event block
@@ -189,10 +189,9 @@ def processEvents(event_file,cut_file=None):
 
     return event_list
 
-#    event_block = event.splitlines()        #store event line by line
-#    event_data = getEventData(event_block)  #retrieve relevant data
 
 #### EXECUTION SUBROUTINE ####
+
 def main():
     # open input/output files
     event_file = open(file_in,'r')  #read only mode for input
