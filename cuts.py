@@ -164,14 +164,12 @@ def extractIntermediateEvents(event_data,index_to_extract,particle_code=null_par
     return _extractEventSubset(event_data,index_to_extract,mid_state,particle_code)
 
 
-#### EXECUTION SUBROUTINE ####
-def main():
-    # open input/output files
-    event_file = open(file_in,'r')  #read only mode for input
-    cut_file = open(file_out,'w')   #write only mode for output
-
+#--- processing functions ---#
+# returns events from lhe file in a list of strings
+def processEvents(event_file,cut_file=None):
     in_event = False                #flag to indicate whether in event block
     event = ''                      #string to store event block data
+    event_list = []
     #contnu = True                  #DEBUG -- ALLOWS PROGRAM TO RUN OVER ONE EVENT ONLY
 
     # line processing loop
@@ -179,15 +177,31 @@ def main():
     #    if contnu == True:             #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
             if line == '<event>\n':     #search file for start of event block
                 in_event = True
-            if in_event == False:       #if not in event block, write line back out
-                cut_file.write(line)    #to file
+            if in_event == False and cut_file != None:  #if not in event block and
+                cut_file.write(line)    #cut file provided, write line back out to file
             if in_event == True:        #if in event, collect info in event string
                 event += line
             if line == '</event>\n':    #once event ends, process the data in the event,
                 in_event = False        #reset the in_event flag, and clear storage str
-                cutOnEvent(cut_file,event)
+                event_list.append(event)
                 event = ''
     #            contnu = False         #DEBUG -- AFTER ONE EVENT, STOP EXECUTION
+
+    return event_list
+
+#    event_block = event.splitlines()        #store event line by line
+#    event_data = getEventData(event_block)  #retrieve relevant data
+
+#### EXECUTION SUBROUTINE ####
+def main():
+    # open input/output files
+    event_file = open(file_in,'r')  #read only mode for input
+    cut_file = open(file_out,'w')   #write only mode for output
+
+    event_list = processEvents(event_file,cut_file)
+
+    for event in event_list:
+        cutOnEvent(cut_file,event)
 
     print(k)                           #DEBUG
 
