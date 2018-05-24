@@ -33,7 +33,7 @@ def fileReadIn():
         print('Processing ' + file.name + '...')
         file_data.append(cuts.processEvents(file))
 
-    if len(file_data) == 0:             #if no events read, quit script
+    if len(file_data[0]) == 0:             #if no events read, quit script
         print('No events read')
         quit()
     else:                               #else report total number of events read
