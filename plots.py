@@ -152,13 +152,16 @@ def extractEvent(file_events,fctn,state,particle_list):
 def plot(data,title,x_label):
     colors = ['b','g','r','o','y']      #color sequence; each file's data gets a
                                         #different color on histogram
+    max_bin = 0
     for i in range(len(data)):          #for each file, plot extracted data as histo
         hgts,bns,ptchs = plt.hist(data[i], num_bins, facecolor=colors[i], alpha = 0.5)      
+        if max(hgts) > max_bin:
+            max_bin = max(hgts)
 
     plt.xlabel(x_label)                 #set labels, title
     plt.ylabel('Number of events')
     plt.title(title)
-    plt.axis([0,np.percentile(data,98),0,max(hgts)*1.1])    #x scale shows 98% of the
+    plt.axis([0,np.percentile(data,98),0,max_bin*1.1])      #x scale shows 98% of the
     plt.grid(True)                                          #data; y is 10% greater
     plt.show()                          #output plot        #than tallest bin
     plt.close()
