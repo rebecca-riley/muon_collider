@@ -1,5 +1,6 @@
 #### IMPORT DECLARATIONS ####
 import matplotlib.pyplot as plt
+import numpy as np
 import cuts
 from progressbar import AdaptiveETA, Bar, Percentage, ProgressBar, SimpleProgress
 
@@ -180,15 +181,15 @@ def plot(data,title,x_label):
     colors = ['b','g','r','o','y']      #color sequence; each file's data gets a
                                         #different color on histogram
     for i in range(len(data)):          #for each file, plot extracted data as histo
-        plt.hist(data[i], num_bins, facecolor=colors[i], alpha = 0.5)      
+        hgts,bns,ptchs = plt.hist(data[i], num_bins, facecolor=colors[i], alpha = 0.5)      
 
     plt.xlabel(x_label)                 #set labels, title
     plt.ylabel('Number of events')
     plt.title(title)
-    # plt.autoscale(tight=True)         #@later make the scale on plot more reasonable
-    # plt.axis([0, 15000, 0, 12500])
-    plt.grid(True)
-    plt.show()                          #output plot
+    plt.axis([0,np.percentile(data,98),0,max(hgts)*1.1])    #x scale shows 98% of the
+    plt.grid(True)                                          #data; y is 10% greater
+    plt.show()                          #output plot        #than tallest bin
+    plt.close()
 
 
 #### EXECUTION SUBROUTINE ####
