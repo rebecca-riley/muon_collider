@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import cuts
-from progressbar import ProgressBar
-pbar = ProgressBar()
+from progressbar import AdaptiveETA, Bar, Percentage, ProgressBar, SimpleProgress
+
 
 num_bins = 150
+
 
 def main():
     file_data = fileReadIn()
@@ -109,6 +110,9 @@ def getDataToPlot(file_data,fctn,state,particle_list):
 def extractEvent(file_data,fctn,state,particle_list):
     _event = []
     temp = []
+
+    pbar = ProgressBar(widgets=['(', SimpleProgress(),') ', Percentage(),' ', Bar(),' ', AdaptiveETA()],maxval=len(file_data)).start()
+
     for event in pbar(file_data):
         event_data = cuts.getEventData(event)  #retrieve relevant data
         if fctn == cuts.getAngle:
