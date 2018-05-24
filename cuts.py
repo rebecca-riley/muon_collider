@@ -24,7 +24,7 @@ initial_state = '-1'
 mid_state = '2'
 final_state = '1'
 
-k=0                     #DEBUG
+k=0                     #counter to track number of events written to file
 
 
 #### FUNCTION DEFINITIONS ####
@@ -56,9 +56,9 @@ def cutOnEvent(cut_file,event):
 
     cut_file.write(event)       #write out full event meeting cut criteria
 
-    # number of events remaining
-    global k            #DEBUG
-    k+=1                #DEBUG
+    # update number of events passing all cuts
+    global k
+    k+=1
 
 
 #--- get functions ---#
@@ -262,8 +262,8 @@ def main():
     for event in pbar(event_list):      #determine for each event if it passes cuts
         cutOnEvent(cut_file,event)
 
-    print(k)                           #DEBUG
-
+    print(str(k) + ' events written to ' + filename_out)    #print number of events
+                                                            #written out
     event_file.close()              #close open files
     cut_file.close()
 
