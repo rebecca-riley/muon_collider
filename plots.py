@@ -91,7 +91,8 @@ def processSelection(plots,file_data):
                 int(which_photon_input)
             except ValueError:
                 print('Value entered must be an integer. Enter plot options again.')
-                which_photon = processSelection(plots,file_data)
+                processSelection(plots,file_data)
+                return
 
         if 'ptnenfin' in plots:
             plotFinalPhotonEnergy(file_data,which_photon)
