@@ -12,7 +12,7 @@ particle_identity_index = 0
 initial_final_index = 1
 x_index, y_index, z_index, energy_index = 6, 7, 8, 9
 mass_index = 10
-spin_index = 11
+spin_index = 12
 
 null_particle = '0'
 photon = '22'
