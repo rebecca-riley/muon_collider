@@ -113,6 +113,7 @@ def plotInitialInvariantMass(file_data,particle_list=[]):
 def plotFinalAngle(file_data,particle_list):
     plot(getDataToPlot(file_data,cuts.getAngle,cuts.final_state,particle_list),\
          'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
+    #@later find a way to accept input as label rather than using numbers
 
 # calls plot function with parameters for plotting initial angle between two particles
 def plotInitialAngle(file_data,particle_list):
@@ -156,7 +157,7 @@ def plot(data,title,x_label):
     plt.xlabel(x_label)                 #set labels, title
     plt.ylabel('Number of events')
     plt.title(title)
-    # plt.autoscale(tight=True)
+    # plt.autoscale(tight=True)         #@later make the scale on plot more reasonable
     # plt.axis([0, 15000, 0, 12500])
     plt.grid(True)
     plt.show()                          #output plot
