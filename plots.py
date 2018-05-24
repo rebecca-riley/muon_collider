@@ -1,15 +1,16 @@
+#### IMPORT DECLARATIONS ####
 import matplotlib.pyplot as plt
 import cuts
 from progressbar import AdaptiveETA, Bar, Percentage, ProgressBar, SimpleProgress
 
 
+#### VARIABLE DEFINITIONS ####
 num_bins = 150
 
 
-def main():
-    file_data = fileReadIn()
-    processSelection(plotReadIn(),file_data)
-    return
+#### FUNCTION DEFINITIONS ####
+
+#--- IO functions ---#
 
 def fileReadIn():
     file_input = input('Enter event files to plot: ').split()   #event files must be
@@ -67,7 +68,8 @@ def plotReadIn():
 
 def processSelection(plots,file_data):
     for option in plots:
-        if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin','aglinit'}:
+        if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin',\
+                          'aglinit'}:
             print('The plot option you specified could not be found.')
             processSelection(plotReadIn(),file_data)
 
@@ -89,17 +91,23 @@ def processSelection(plots,file_data):
         plotInitialAngle(file_data, particle_list)
 
 
+#--- plotting functions ---#
+
 def plotFinalInvariantMass(file_data,particle_list=[]):
-    plot(getDataToPlot(file_data,cuts.getInvariantMass,cuts.final_state,particle_list),'Final invariant mass histogram','Invariant mass')
+    plot(getDataToPlot(file_data,cuts.getInvariantMass,cuts.final_state,particle_list),\
+         'Final invariant mass histogram','Invariant mass')
 
 def plotInitialInvariantMass(file_data,particle_list=[]):
-    plot(getDataToPlot(file_data,cuts.getInvariantMass,cuts.initial_state,particle_list),'Initial invariant mass histogram','Invariant mass')
+    plot(getDataToPlot(file_data,cuts.getInvariantMass,cuts.initial_state,particle_list),\
+         'Initial invariant mass histogram','Invariant mass')
 
 def plotFinalAngle(file_data,particle_list):
-    plot(getDataToPlot(file_data,cuts.getAngle,cuts.final_state,particle_list),'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
+    plot(getDataToPlot(file_data,cuts.getAngle,cuts.final_state,particle_list),\
+         'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
 
 def plotInitialAngle(file_data,particle_list):
-    plot(getDataToPlot(file_data,cuts.getAngle,cuts.initial_state,particle_list),'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
+    plot(getDataToPlot(file_data,cuts.getAngle,cuts.initial_state,particle_list),\
+         'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
 
 def getDataToPlot(file_data,fctn,state,particle_list):
     data_to_plot = []
@@ -111,7 +119,8 @@ def extractEvent(file_data,fctn,state,particle_list):
     _event = []
     temp = []
 
-    pbar = ProgressBar(widgets=['(', SimpleProgress(),') ', Percentage(),' ', Bar(),' ', AdaptiveETA()],maxval=len(file_data)).start()
+    pbar = ProgressBar(widgets=['(', SimpleProgress(),') ', Percentage(),' ', Bar(),\
+           ' ', AdaptiveETA()],maxval=len(file_data)).start()
 
     for event in pbar(file_data):
         event_data = cuts.getEventData(event)  #retrieve relevant data
@@ -136,6 +145,13 @@ def plot(data,title,x_label):
     plt.grid(True)
     plt.show()
 
+
+#### EXECUTION SUBROUTINE ####
+
+def main():
+    file_data = fileReadIn()
+    processSelection(plotReadIn(),file_data)
+    return
 
 if __name__ == '__main__':
     main()
