@@ -7,7 +7,7 @@ from progressbar import AdaptiveETA, Bar, Percentage, ProgressBar, SimpleProgres
 
 #### VARIABLE DEFINITIONS ####
 num_bins = 150
-percentile_to_show_x_axis = 98
+percentile_to_show_x = 98
 padding_multiplier_over_top_y = 1.1
 transparency = 0.5
 
@@ -83,7 +83,7 @@ def processSelection(plots,file_data):
             processSelection(plotReadIn(),file_data)
 
     #for each specified plot option, process data for and output that plot
-    if 'ptnenfin' or 'pteninit' in plots:
+    if 'ptnenfin' in plots or 'ptneninit' in plots:
         which_photon = 0
         which_photon_input = input('Enter which photon. No value entered defaults '\
                                    'to zero: ').strip()
