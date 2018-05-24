@@ -184,6 +184,8 @@ def extractEvent(file_events,fctn,state,particle_list):
 def plot(data,title,x_label):
     colors = ['b','g','r','o','y']      #color sequence; each file's data gets a
                                         #different color on histogram
+    plt.figure(id(data))                #associate each figure with a unique ID to
+                                        #allow for multiple windows
     max_bin = 0
     for i in range(len(data)):          #for each file, plot extracted data as histo
         heights,bins,patches = plt.hist(data[i], num_bins, facecolor=colors[i], 
@@ -197,15 +199,14 @@ def plot(data,title,x_label):
     plt.axis([0,np.percentile(data,percentile_to_show_x),0, #x scale shows percntl %
               max_bin*padding_multiplier_over_top_y])       #of the data; y is greater
     plt.grid(True)                                          #than tallest bin by the
-    plt.show()                          #output plot        #padding multiplier
-    plt.close()
-
+                                                            #padding multiplier
 
 #### EXECUTION SUBROUTINE ####
 
 def main():
     file_data = fileReadIn()            #read in input files
     processSelection(plotReadIn(),file_data)    #read in and process plot options
+    plt.show()                          #output plots
     return
 
 if __name__ == '__main__':
