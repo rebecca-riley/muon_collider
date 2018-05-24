@@ -7,6 +7,9 @@ from progressbar import AdaptiveETA, Bar, Percentage, ProgressBar, SimpleProgres
 
 #### VARIABLE DEFINITIONS ####
 num_bins = 150
+percentile_to_show_x_axis = 98
+padding_multiplier_over_top_y = 1.1
+transparency = 0.5
 
 
 #### FUNCTION DEFINITIONS ####
@@ -154,16 +157,18 @@ def plot(data,title,x_label):
                                         #different color on histogram
     max_bin = 0
     for i in range(len(data)):          #for each file, plot extracted data as histo
-        hgts,bns,ptchs = plt.hist(data[i], num_bins, facecolor=colors[i], alpha = 0.5)      
-        if max(hgts) > max_bin:
-            max_bin = max(hgts)
+        heights,bins,patches = plt.hist(data[i], num_bins, facecolor=colors[i], 
+                                        alpha = transparency)      
+        if max(heights) > max_bin:
+            max_bin = max(heights)
 
     plt.xlabel(x_label)                 #set labels, title
     plt.ylabel('Number of events')
     plt.title(title)
-    plt.axis([0,np.percentile(data,98),0,max_bin*1.1])      #x scale shows 98% of the
-    plt.grid(True)                                          #data; y is 10% greater
-    plt.show()                          #output plot        #than tallest bin
+    plt.axis([0,np.percentile(data,percentile_to_show_x),0, #x scale shows percntl %
+              max_bin*padding_multiplier_over_top_y])       #of the data; y is greater
+    plt.grid(True)                                          #than tallest bin by the
+    plt.show()                          #output plot        #padding multiplier
     plt.close()
 
 
