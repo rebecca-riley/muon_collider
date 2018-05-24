@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import cuts
+from progressbar import ProgressBar
+pbar = ProgressBar()
 
 num_bins = 150
-k=0
 
 def main():
     file_data = fileReadIn()
@@ -108,16 +109,12 @@ def getDataToPlot(file_data,fctn,state,particle_list):
 def extractEvent(file_data,fctn,state,particle_list):
     _event = []
     temp = []
-    for event in file_data:
+    for event in pbar(file_data):
         event_data = cuts.getEventData(event)  #retrieve relevant data
         if fctn == cuts.getAngle:
             temp.append(fctn(event_data,state,particle_list[0],particle_list[1]))
         else:
             temp.append(fctn(event_data,state,particle_list))
-        global k
-        k += 1
-        if k%10000 == 0:
-            print(k)
     _event.append(temp)
     return _event
 
