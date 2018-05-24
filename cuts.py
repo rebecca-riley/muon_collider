@@ -50,7 +50,9 @@ def cutOnEvent(cut_file,event):
            abs(getAngle(event_data,final_state,photon,mu_minus))) < 30:
         return
 
-    #@later add cut on photon energy
+    # energy cut on outgoing photons
+    if getPhotonEnergy(event_data,final_state) < 20:
+        return
 
     cut_file.write(event)       #write out full event meeting cut criteria
 
