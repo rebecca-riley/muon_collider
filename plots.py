@@ -34,7 +34,7 @@ def fileReadIn():
         print('Processing ' + file.name + '...')
         file_data.append(cuts.processEvents(file))
 
-    if len(file_data[0]) == 0:             #if no events read, quit script
+    if len(file_data[0]) == 0:          #if no events read, quit script
         print('No events read')
         quit()
     else:                               #else report total number of events read
@@ -101,7 +101,7 @@ def processSelection(plots,file_data):
     if 'massfin' in plots:
         plotFinalInvariantMass(file_data)
     if 'massinit' in plots:
-        plotInitialInvariantMass(file_data)
+        plotInitialInvariantMass(file_data) #@later make prtcl code input more robust
     if 'massfinpar' in plots:           #require particle codes for partial inv. mass
         particle_list = input('Enter particle codes for partial invariant mass: ').split()
         plotFinalInvariantMass(file_data, particle_list)
