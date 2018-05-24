@@ -79,7 +79,7 @@ def processSelection(plots,file_data):
             processSelection(plotReadIn(),file_data)
 
     #for each specified plot option, process data for and output that plot
-    if 'ptnenfin' in plots:
+    if 'ptnenfin' or 'pteninit' in plots:
         which_photon = 0
         which_photon_input = input('Enter which photon. No value entered defaults '\
                                    'to zero: ').strip()
@@ -91,7 +91,11 @@ def processSelection(plots,file_data):
             except ValueError:
                 print('Value entered must be an integer. Enter plot options again.')
                 which_photon = processSelection(plots,file_data)
-        plotFinalPhotonEnergy(file_data,which_photon)
+
+        if 'ptnenfin' in plots:
+            plotFinalPhotonEnergy(file_data,which_photon)
+        if 'ptneninit' in plots:
+            plotInitialPhotonEnergy(file_data,which_photon)
     if 'massfin' in plots:
         plotFinalInvariantMass(file_data)
     if 'massinit' in plots:
@@ -135,8 +139,14 @@ def plotInitialAngle(file_data,particle_list):
     plot(getDataToPlot(file_data,cuts.getAngle,cuts.initial_state,particle_list),\
          'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
 
+# calls plot function with parameters for plotting final, single photon energy
 def plotFinalPhotonEnergy(file_data,which_photon):
     plot(getDataToPlot(file_data,cuts.getPhotonEnergy,cuts.final_state,which_photon),\
+         'Photon energy histogram','Energy')
+
+# calls plot function with parameters for plotting initial, single photon energy
+def plotInitialPhotonEnergy(file_data,which_photon):
+    plot(getDataToPlot(file_data,cuts.getPhotonEnergy,cuts.initial_state,which_photon),\
          'Photon energy histogram','Energy')
 
 # return list of data points from each specified file in format acceptable for plotting
