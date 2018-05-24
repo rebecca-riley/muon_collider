@@ -6,8 +6,6 @@ pbar = ProgressBar()
 
 
 #### VARIABLE DEFINITIONS ####
-file_in = 'composite_100k.lhe'
-file_out = 'composite_cut.lhe'
 
 # magic number constants for event processing
 particle_identity_index = 0
@@ -198,12 +196,26 @@ def processEvents(event_file,cut_file=None):
 
 def main():
     # open input/output files
-    event_file = open(file_in,'r')  #read only mode for input
-    cut_file = open(file_out,'w')   #write only mode for output
+    filename = input('Enter event file to cut on: ').strip()
 
-    event_list = processEvents(event_file,cut_file)
+    if filename == 'quit':              #quit if user wants to exit
+        return
 
-    for event in pbar(event_list):
+    try:                                #try to open file with inputted filename
+        event_file = open(filename,'r')
+    except IOError:                     #give error message, exit if file not found
+        print(filename + ' not found. Try again with corrected input.')
+        return
+
+    filename_split = filename.split('.')    #create formulaic output filename (add _cut)
+    filename_out = filename_split[0] + '_cut.' + '.'.join(filename_split[1:])
+    
+    cut_file = open(filename_out,'w')   #write only mode for output
+    print('Writing cut events to ' + filename_out)  #let user know output filename
+
+    event_list = processEvents(event_file,cut_file) #extract events from input file
+
+    for event in pbar(event_list):      #determine for each event if it passes cuts
         cutOnEvent(cut_file,event)
 
     print(k)                           #DEBUG
