@@ -110,6 +110,48 @@ def getAngle(event_data,event_state,particle1_code, particle2_code,which_particl
     return math.degrees(math.acos(vec1.inner(vec2)/(vec1.norm()*vec2.norm())))
 
 
+# returns the energy of a specified photon in a given state
+# optional: if you have more than one photon in a given state, you can specify which
+#           one you want to consider with the which_particle parameter; default value
+#           is the first particle found
+# raises:   ValueError if no events found matching input parameters
+#           IndexError if requested which_particle index does not exist (this might
+#           occur if there are less photons in the given state than the requested
+#           index)
+def getPhotonEnergy(event_data,event_state,which_particle=0):
+    energy = _extractEventSubset(event_data,energy_index,event_state,photon)
+    if len(energy) == 0:
+        raise ValueError('no photons found in the given state')
+    if which_particle >= len(energy):
+        raise IndexError('photon instance index out of range')
+    return energy[which_particle]
+
+
+# alternate function to return the energy of a specified photon in a given state
+# note:     _detPhotonEnergy is less efficient than getPhotonEnergy, so getPhotonEnergy
+#           will be used by default
+# optional: if you have more than one photon in a given state, you can specify which
+#           one you want to consider with the which_particle parameter; default value
+#           is the first particle found
+# raises:   ValueError if no events found matching input parameters
+#           IndexError if requested which_particle index does not exist (this might
+#           occur if there are less photons in the given state than the requested
+#           index)
+def _getPhotonEnergyAlternate(event_data,event_state,which_particle=0):
+    p = []
+
+    for index in [x_index,y_index,z_index]:
+        subset = _extractEventSubset(event_data,index,event_state,photon)
+        if len(subset) == 0:
+            raise ValueError('no photons found in the given state')
+        if which_particle >= len(subset):
+            raise IndexError('photon instance index out of range')
+        p.append(subset[which_particle])
+
+    # E_photon = norm(p_photon)
+    return math.sqrt(p[0]**2 + p[1]**2 + p[2]**2)
+
+
 #--- extraction functions ---#
 
 # returns list of rows (strings) containing collision data
