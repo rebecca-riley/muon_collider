@@ -6,44 +6,7 @@ k=0
 
 def main():
     file_data = fileReadIn()
-
-    plots = input('Enter desired plots. Type \'help\' for options or \'quit\' to ' +
-                  'exit. ').split()
-
-    while len(plots) == 0:
-        plots = input('No plots specified. Enter the tags for the desired plots. Type'
-                      ' \'help\' for options. ').split()
-
-    if plots[0] == 'quit':
-        return
-
-    if plots[0] == 'help':
-        print('[Options]')
-        print('final total invariant mass: massfin')
-        print('final partial invariant_mass: massfinpar')
-        print('initial total invariant mass: massinit')
-        print('initial partial invariant_mass: massinitpar')
-        print('final angle between particles: aglfin')
-        print('initial angle between particles: aglinit')
-        plots = input('Enter parameter to plot: ').split()
-
-    if 'massfin' in plots:
-        plotFinalInvariantMass(file_data)
-    if 'massinit' in plots:
-        plotInitialInvariantMass(file_data)
-    if 'massfinpar' in plots:
-        particle_list = input('Enter particle codes for partial invariant mass: ').split()
-        plotFinalInvariantMass(file_data, particle_list)
-    if 'massinitpar' in plots:
-        particle_list = input('Enter particle codes for partial invariant mass: ').split()
-        plotInitialInvariantMass(file_data, particle_list)
-    if 'aglfin' in plots:
-        particle_list = input('Enter two particle codes for angle between: ').split()
-        plotFinalAngle(file_data, particle_list)
-    if 'aglinit' in plots:
-        particle_list = input('Enter two particle codes for angle between: ').split()
-        plotInitialAngle(file_data, particle_list)
-
+    processSelection(plotReadIn(),file_data)
     return
 
 def fileReadIn():
@@ -76,6 +39,52 @@ def fileReadIn():
         print(str(total_events) + ' events read.')    
 
     return file_data
+
+def plotReadIn():
+    plots = input('Enter desired plots. Type \'help\' for options or \'quit\' to ' +
+                  'exit. ').split()
+
+    while len(plots) == 0:
+        plots = input('No plots specified. Enter the tags for the desired plots. Type'
+                      ' \'help\' for options. ').split()
+
+    if 'quit' in plots:
+        quit()
+
+    if 'help' in plots:
+        print('[Options]')
+        print('final total invariant mass: massfin')
+        print('final partial invariant_mass: massfinpar')
+        print('initial total invariant mass: massinit')
+        print('initial partial invariant_mass: massinitpar')
+        print('final angle between particles: aglfin')
+        print('initial angle between particles: aglinit')
+        return plotReadIn()
+
+    return plots
+
+def processSelection(plots,file_data):
+    for option in plots:
+        if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin','aglinit'}:
+            print('The plot option you specified could not be found.')
+            processSelection(plotReadIn(),file_data)
+
+    if 'massfin' in plots:
+        plotFinalInvariantMass(file_data)
+    if 'massinit' in plots:
+        plotInitialInvariantMass(file_data)
+    if 'massfinpar' in plots:
+        particle_list = input('Enter particle codes for partial invariant mass: ').split()
+        plotFinalInvariantMass(file_data, particle_list)
+    if 'massinitpar' in plots:
+        particle_list = input('Enter particle codes for partial invariant mass: ').split()
+        plotInitialInvariantMass(file_data, particle_list)
+    if 'aglfin' in plots:
+        particle_list = input('Enter two particle codes for angle between: ').split()
+        plotFinalAngle(file_data, particle_list)
+    if 'aglinit' in plots:
+        particle_list = input('Enter two particle codes for angle between: ').split()
+        plotInitialAngle(file_data, particle_list)
 
 
 def plotFinalInvariantMass(file_data,particle_list=[]):
@@ -115,10 +124,7 @@ def extractEvent(file_data,fctn,state,particle_list):
 def plot(data,title,x_label):
     colors = ['b','g','r','o','y']
 
-    print(len(data))
     for i in range(len(data)):
-        print(i)
-        print(colors[i])
         plt.hist(data[i], num_bins, facecolor=colors[i], alpha = 0.5)      
 
     plt.xlabel(x_label)
