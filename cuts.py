@@ -1,6 +1,8 @@
 #### IMPORT DECLARATIONS ####
 from vector import Vector
 import math
+from progressbar import ProgressBar
+pbar = ProgressBar()
 
 
 #### VARIABLE DEFINITIONS ####
@@ -199,7 +201,7 @@ def main():
 
     event_list = processEvents(event_file,cut_file)
 
-    for event in event_list:
+    for event in pbar(event_list):
         cutOnEvent(cut_file,event)
 
     print(k)                           #DEBUG
