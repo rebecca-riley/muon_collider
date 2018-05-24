@@ -64,6 +64,8 @@ def plotReadIn():
         print('initial partial invariant_mass: massinitpar')
         print('final angle between particles: aglfin')
         print('initial angle between particles: aglinit')
+        print('final photon energy: ptnenfin')
+        print('initial photon energy: ptneninit')
         return plotReadIn()             #prompt for input again
 
     return plots                        #return list of desired plotting options
@@ -72,11 +74,24 @@ def plotReadIn():
 def processSelection(plots,file_data):
     for option in plots:        #if any option is not recognized, reprompt for input
         if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin',\
-                          'aglinit'}:
+                          'aglinit','ptnenfin','ptneninit'}:
             print('The plot option you specified could not be found.')
             processSelection(plotReadIn(),file_data)
 
     #for each specified plot option, process data for and output that plot
+    if 'ptnenfin' in plots:
+        which_photon = 0
+        which_photon_input = input('Enter which photon. No value entered defaults '\
+                                   'to zero: ').strip()
+        if len(which_photon_input) == 0:
+            pass
+        else:
+            try:
+                int(which_photon_input)
+            except ValueError:
+                print('Value entered must be an integer. Enter plot options again.')
+                which_photon = processSelection(plots,file_data)
+        plotFinalPhotonEnergy(file_data,which_photon)
     if 'massfin' in plots:
         plotFinalInvariantMass(file_data)
     if 'massinit' in plots:
@@ -120,6 +135,10 @@ def plotInitialAngle(file_data,particle_list):
     plot(getDataToPlot(file_data,cuts.getAngle,cuts.initial_state,particle_list),\
          'Histogram of angle between '+particle_list[0]+' and '+particle_list[1],'Angle')
 
+def plotFinalPhotonEnergy(file_data,which_photon):
+    plot(getDataToPlot(file_data,cuts.getPhotonEnergy,cuts.final_state,which_photon),\
+         'Photon energy histogram','Energy')
+
 # return list of data points from each specified file in format acceptable for plotting
 def getDataToPlot(file_data,fctn,state,particle_list):
     data_to_plot = []                   #each file_event is a list of events
@@ -135,7 +154,6 @@ def extractEvent(file_events,fctn,state,particle_list):
     #progress bar to show event processing progress
     pbar = ProgressBar(widgets=['(', SimpleProgress(),') ', Percentage(),' ', Bar(),\
            ' ', AdaptiveETA()],maxval=len(file_events)).start()
-
 
     for event in pbar(file_events):     #for each event in a file
         event_data = cuts.getEventData(event)   #fetch data from event in usable form
