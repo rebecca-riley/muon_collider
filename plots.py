@@ -81,6 +81,7 @@ def processSelection(plots,file_data):
                           'aglinit','ptnenfin','ptneninit'}:
             print('The plot option you specified could not be found.')
             processSelection(plotReadIn(),file_data)
+            return
 
     #for each specified plot option, process data for and output that plot
     if 'ptnenfin' in plots or 'ptneninit' in plots:
