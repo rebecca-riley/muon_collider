@@ -78,11 +78,15 @@ def plotReadIn():
 def processSelection(plots,file_data):
     for option in plots:        #if any option is not recognized, reprompt for input
         if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin',\
-                          'aglinit','ptnenfin','ptneninit'}:
+                          'aglinit','ptnenfin','ptneninit','all'}:
             print('The plot option you specified could not be found.')
             processSelection(plotReadIn(),file_data)
             return
 
+    #change default percentile to show from 98 to 100
+    if 'all' in plots:
+        global percentile_to_show_x
+        percentile_to_show_x = 100
     #for each specified plot option, process data for and output that plot
     if 'ptnenfin' in plots or 'ptneninit' in plots:
         which_photon = 0
