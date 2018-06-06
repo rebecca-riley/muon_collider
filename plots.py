@@ -185,8 +185,8 @@ def extractEvent(file_events,fctn,state,particle_list):
 # outputs one plot for every plot option specified by the user; plots the data from
 # each specified file on a single plot
 def plot(data,title,x_label):
-    colors = ['b','g','r','o','y']      #color sequence; each file's data gets a
-                                        #different color on histogram
+    colors = ['b','g','r','y','c','m','k']  #color sequence; each file's data gets a
+                                            #different color on histogram
     plt.figure(id(data))                #associate each figure with a unique ID to
                                         #allow for multiple windows
     max_bin, max_range = 0,0
