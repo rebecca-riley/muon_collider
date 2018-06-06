@@ -169,7 +169,6 @@ def getDataToPlot(file_data,fctn,state,particle_list):
 # returns list of desired data points extracted from event list of single file
 def extractEvent(file_events,fctn,state,particle_list):
     data = []                           #array to hold desired data parsed from events
-    temp = []                           #temporary array for processing
 
     #progress bar to show event processing progress
     pbar = ProgressBar(widgets=['(', SimpleProgress(),') ', Percentage(),' ', Bar(),\
@@ -178,32 +177,35 @@ def extractEvent(file_events,fctn,state,particle_list):
     for event in pbar(file_events):     #for each event in a file
         event_data = cuts.getEventData(event)   #fetch data from event in usable form
         if fctn == cuts.getAngle:       #use only first two particles for angle plots
-            temp.append(fctn(event_data,state,particle_list[0],particle_list[1]))
+            data.append(fctn(event_data,state,particle_list[0],particle_list[1]))
         else:                           #all other plots simply call fctn to extract
-            temp.append(fctn(event_data,state,particle_list))   #desired quantity
-    data.append(temp)
+            data.append(fctn(event_data,state,particle_list))   #desired quantity
     return data                         #return list of desired data from one file
 
 # outputs one plot for every plot option specified by the user; plots the data from
 # each specified file on a single plot
 def plot(data,title,x_label):
-    colors = ['b','g','r','o','y']      #color sequence; each file's data gets a
-                                        #different color on histogram
+    colors = ['b','g','r','y','c','m','k']  #color sequence; each file's data gets a
+                                            #different color on histogram
     plt.figure(id(data))                #associate each figure with a unique ID to
                                         #allow for multiple windows
-    max_bin = 0
+    max_bin, max_range = 0,0
     for i in range(len(data)):          #for each file, plot extracted data as histo
         heights,bins,patches = plt.hist(data[i], num_bins, facecolor=colors[i], 
                                         alpha = transparency)      
-        if max(heights) > max_bin:
+        if max(heights) > max_bin:      #keep track of tallest bin
             max_bin = max(heights)
+
+        if len(data[i]) > len(data[max_range]): #keep track of widest-ranging data
+            max_range = i
 
     plt.xlabel(x_label)                 #set labels, title
     plt.ylabel('Number of events')
     plt.title(title)
-    plt.axis([0,np.percentile(data,percentile_to_show_x),0, #x scale shows percntl %
-              max_bin*padding_multiplier_over_top_y])       #of the data; y is greater
-    plt.grid(True)                                          #than tallest bin by the
+    plt.axis([0,np.percentile(data[max_range],percentile_to_show_x),0, #x scale shows
+              max_bin*padding_multiplier_over_top_y])       #percntl % of widest-ran-
+    plt.grid(True)                                          #ging data; y is greater
+                                                            #than tallest bin by the
                                                             #padding multiplier
 
 #### EXECUTION SUBROUTINE ####
