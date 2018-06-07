@@ -31,20 +31,29 @@ final_state = '1'
 #--- cut functions ---#
 
 # boolean function indicating whether event passes or fails cuts
-def passesCuts(event):
+def passesCuts(event,flags_enabled=False):
     event_data = getEventData(event)  #retrieve relevant data
 
     # mass cut on two final taus
     inv_mass_tt = getInvariantMass(event_data,final_state,[tau_plus,tau_minus])
     if inv_mass_tt > 80 and inv_mass_tt < 100:
-        return False
+        if flags_enabled:
+            return 1
+        else:
+            return False
 
     # mass cut on final taus and photon
     inv_mass_tta = getInvariantMass(event_data,final_state,[tau_plus,tau_minus,photon])
     if inv_mass_tta > 130 or inv_mass_tta < 120:
-        return False
+        if flags_enabled:
+            return 2
+        else:
+            return False
 
-    return True
+    if flags_enabled:
+        return 0
+    else:
+        return True
 
 
 #--- get functions ---#
