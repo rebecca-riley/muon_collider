@@ -36,35 +36,15 @@ k=0                     #counter to track number of events written to file
 def cutOnEvent(cut_file,event):
     event_data = getEventData(event)  #retrieve relevant data
 
-    # mass cut on all final elements
-    # inv_mass_final = getInvariantMass(event_data,final_state)
-    # if inv_mass_final<120 or inv_mass_final>130:
-    #     return
-    
-    # mass cut on two final elements
-    inv_mass_mu_mu = getInvariantMass(event_data,final_state,[tau_plus,tau_minus])
-    if inv_mass_mu_mu>80 and inv_mass_mu_mu<100:
+    # mass cut on two final taus
+    inv_mass_tt = getInvariantMass(event_data,final_state,[tau_plus,tau_minus])
+    if inv_mass_tt > 80 and inv_mass_tt < 100:
         return
 
-    # if inv_mass_mu_mu>120 and inv_mass_mu_mu<130:
-        # return
-
-    inv_mass_t = getInvariantMass(event_data,final_state,[tau_plus,tau_minus,photon])
-    if inv_mass_t>130 or inv_mass_t<120:
+    # mass cut on final taus and photon
+    inv_mass_tta = getInvariantMass(event_data,final_state,[tau_plus,tau_minus,photon])
+    if inv_mass_tta > 130 or inv_mass_tta < 120:
         return
-
-    # zen = getZEnergy(event_data,final_state)
-    # if zen < 200:
-    #     return
-
-    # # angle cut on angle between final photon and associated fermions
-    # if min(abs(getAngle(event_data,final_state,photon,mu_plus)),
-    #        abs(getAngle(event_data,final_state,photon,mu_minus))) < 30:
-    #     return
-
-    # energy cut on outgoing photons
-    # if getPhotonEnergy(event_data,final_state) < 20:
-    #     return
 
     cut_file.write(event)       #write out full event meeting cut criteria
 
