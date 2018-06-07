@@ -24,41 +24,35 @@ initial_state = '-1'
 mid_state = '2'
 final_state = '1'
 
-k=0                     #counter to track number of events written to file
-
 
 #### FUNCTION DEFINITIONS ####
 
 #--- cut functions ---#
 
 # cuts on events and writes ones that we want to keep to the file
-def cutOnEvent(cut_file,event):
+def passesCuts(event):
     event_data = getEventData(event)  #retrieve relevant data
 
     # mass cut on all final elements
     inv_mass_final = getInvariantMass(event_data,final_state)
     if inv_mass_final<120 or inv_mass_final>130:
-        return
+        return False
     
     # mass cut on two final elements
     inv_mass_mu_mu = getInvariantMass(event_data,final_state,[mu_plus,mu_minus])
     if inv_mass_mu_mu>85 and inv_mass_mu_mu<95:
-        return
+        return False
 
     # angle cut on angle between final photon and associated fermions
     if min(abs(getAngle(event_data,final_state,photon,mu_plus)),
            abs(getAngle(event_data,final_state,photon,mu_minus))) < 30:
-        return
+        return False
 
     # energy cut on outgoing photons
     if getPhotonEnergy(event_data,final_state) < 20:
-        return
+        return False
 
-    cut_file.write(event)       #write out full event meeting cut criteria
-
-    # update number of events passing all cuts
-    global k
-    k+=1
+    return True
 
 
 #--- get functions ---#
@@ -259,8 +253,11 @@ def main():
 
     event_list = processEvents(event_file,cut_file) #extract events from input file
 
+    k=0                                 #counter to track # of events written out
     for event in pbar(event_list):      #determine for each event if it passes cuts
-        cutOnEvent(cut_file,event)
+        if passesCuts(event):
+            cut_file.write(event)       #write out full event meeting cut criteria
+            k += 1                      #update number of events passing all cuts
 
     print(str(k) + ' events written to ' + filename_out)    #print number of events
                                                             #written out
