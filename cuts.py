@@ -30,7 +30,7 @@ final_state = '1'
 
 #--- cut functions ---#
 
-# cuts on events and writes ones that we want to keep to the file
+# boolean function indicating whether event passes or fails cuts
 def passesCuts(event):
     event_data = getEventData(event)  #retrieve relevant data
 
