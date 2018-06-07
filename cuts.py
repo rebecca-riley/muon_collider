@@ -18,6 +18,7 @@ null_particle = '0'
 photon = '22'
 mu_minus, mu_plus = '13', '-13'
 tau_minus, tau_plus = '15', '-15'
+z = '23'
 higgs = '25'
 
 initial_state = '-1'
@@ -123,31 +124,32 @@ def getAngle(event_data,event_state,particle1_code, particle2_code,which_particl
     return math.degrees(math.acos(vec1.inner(vec2)/(vec1.norm()*vec2.norm())))
 
 
-# returns the energy of a specified photon in a given state
-# optional: if you have more than one photon in a given state, you can specify which
+# returns the energy of a specified particle in a given state
+# optional: if you have more than one particle in a given state, you can specify which
 #           one you want to consider with the which_particle parameter; default value
 #           is the first particle found
 # raises:   ValueError if no events found matching input parameters
 #           IndexError if requested which_particle index does not exist (this might
 #           occur if there are less photons in the given state than the requested
 #           index)
+def getEnergy(event_data,event_state,particle_label,which_particle=0):
+    energy = _extractEventSubset(event_data,energy_index,event_state,particle_label)
+    if len(energy) == 0:
+        raise ValueError('no particles found in the given state')
+    if which_particle >= len(energy):
+        raise IndexError('particle instance index out of range')
+    return energy[which_particle]
+
+# returns the energy of a photon for backwards compatibility
 def getPhotonEnergy(event_data,event_state,which_particle=0):
-    energy = _extractEventSubset(event_data,energy_index,event_state,photon)
-    if len(energy) == 0:
-        raise ValueError('no photons found in the given state')
-    if which_particle >= len(energy):
-        raise IndexError('photon instance index out of range')
-    return energy[which_particle]
+    return getEnergy(event_data,event_state,photon,which_particle)
 
+# returns the energy of the z for backwards compatibility
 def getZEnergy(event_data,event_state,which_particle=0):
-    energy = _extractEventSubset(event_data,energy_index,event_state,'23')
-    if len(energy) == 0:
-        raise ValueError('no zs found in the given state')
-    if which_particle >= len(energy):
-        raise IndexError('z instance index out of range')
-    return energy[which_particle]
+    return getEnergy(event_data,event_state,z,which_particle)
 
 
+#--- deprecated ---#
 # alternate function to return the energy of a specified photon in a given state
 # note:     _detPhotonEnergy is less efficient than getPhotonEnergy, so getPhotonEnergy
 #           will be used by default
