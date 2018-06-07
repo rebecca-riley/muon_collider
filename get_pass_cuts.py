@@ -9,24 +9,31 @@ if filename == 'quit':              #quit if user wants to exit
     quit()
 
 event_file = 0
+initial_cross_section = 0
 
 try:                                #try to open file with inputted filename
     event_file = open(filename,'r')
-    print('Initial cross section: ' + str(get_cross_section.getCrossSection(event_file)))
+    initial_cross_section = float(get_cross_section.getCrossSection(event_file))
+    print('Initial cross section: ' + str(initial_cross_section))
 except IOError:                     #give error message, exit if file not found
     print(filename + ' not found. Try again with corrected input.')
     quit()
 
 event_list = cuts.processEvents(event_file,cut_file) #extract events from input file
-
-print('Number of events read: ' + str(len(event_list)))
+total_events = len(event_list)
+print('Number of events read: ' + str(total_events))
 
 fails_cut = [0, 0, 0]
 for event in cuts.pbar(event_list):      #determine for each event if it passes cuts
     fails_cut[cuts.passesCuts(event,True)] += 1
 
-print(fails_cut[0])
-print(fails_cut[1])
-print(fails_cut[2])
+number_remaining = len(event_list) - fails_cut[1]
+percent_passing = number_remaining/total_events
+print('Percent of events passing first cut: ' + str(percent_passing*100))
+print('Modified cross section: ' + str(initial_cross_section*percent_passing))
+number_remaining = number_remaining - fails_cut[2]
+percent_passing = number_remaining/total_events
+print('Percent of events passing both cuts: ' + str(percent_passing*100))
+print('Modified cross section: ' + str(initial_cross_section*percent_passing))
 
 event_file.close()              #close open files
