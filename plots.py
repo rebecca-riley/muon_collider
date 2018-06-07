@@ -78,7 +78,7 @@ def plotReadIn():
 def processSelection(plots,file_data):
     for option in plots:        #if any option is not recognized, reprompt for input
         if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin',\
-                          'aglinit','ptnenfin','ptneninit','all'}:
+                          'aglinit','ptnenfin','ptneninit','all','zenfin'}:
             print('The plot option you specified could not be found.')
             processSelection(plotReadIn(),file_data)
             return
@@ -106,6 +106,8 @@ def processSelection(plots,file_data):
             plotFinalPhotonEnergy(file_data,which_photon)
         if 'ptneninit' in plots:
             plotInitialPhotonEnergy(file_data,which_photon)
+    if 'zenfin' in plots:
+        plotFinalZEnergy(file_data,0)
     if 'massfin' in plots:
         plotFinalInvariantMass(file_data)
     if 'massinit' in plots:
@@ -158,6 +160,11 @@ def plotFinalPhotonEnergy(file_data,which_photon):
 def plotInitialPhotonEnergy(file_data,which_photon):
     plot(getDataToPlot(file_data,cuts.getPhotonEnergy,cuts.initial_state,which_photon),\
          'Photon energy histogram','Energy')
+
+# calls plot function with parameters for plotting final, single photon energy
+def plotFinalZEnergy(file_data,which_z):
+    plot(getDataToPlot(file_data,cuts.getZEnergy,cuts.final_state,which_z),\
+         'Z energy histogram','Energy')
 
 # return list of data points from each specified file in format acceptable for plotting
 def getDataToPlot(file_data,fctn,state,particle_list):

@@ -18,6 +18,7 @@ null_particle = '0'
 photon = '22'
 mu_minus, mu_plus = '13', '-13'
 tau_minus, tau_plus = '15', '-15'
+z = '23'
 higgs = '25'
 
 initial_state = '-1'
@@ -33,23 +34,14 @@ final_state = '1'
 def passesCuts(event):
     event_data = getEventData(event)  #retrieve relevant data
 
-    # mass cut on all final elements
-    inv_mass_final = getInvariantMass(event_data,final_state)
-    if inv_mass_final<120 or inv_mass_final>130:
-        return False
-    
-    # mass cut on two final elements
-    inv_mass_mu_mu = getInvariantMass(event_data,final_state,[mu_plus,mu_minus])
-    if inv_mass_mu_mu>85 and inv_mass_mu_mu<95:
+    # mass cut on two final taus
+    inv_mass_tt = getInvariantMass(event_data,final_state,[tau_plus,tau_minus])
+    if inv_mass_tt > 80 and inv_mass_tt < 100:
         return False
 
-    # angle cut on angle between final photon and associated fermions
-    if min(abs(getAngle(event_data,final_state,photon,mu_plus)),
-           abs(getAngle(event_data,final_state,photon,mu_minus))) < 30:
-        return False
-
-    # energy cut on outgoing photons
-    if getPhotonEnergy(event_data,final_state) < 20:
+    # mass cut on final taus and photon
+    inv_mass_tta = getInvariantMass(event_data,final_state,[tau_plus,tau_minus,photon])
+    if inv_mass_tta > 130 or inv_mass_tta < 120:
         return False
 
     return True
@@ -106,23 +98,32 @@ def getAngle(event_data,event_state,particle1_code, particle2_code,which_particl
     return math.degrees(math.acos(vec1.inner(vec2)/(vec1.norm()*vec2.norm())))
 
 
-# returns the energy of a specified photon in a given state
-# optional: if you have more than one photon in a given state, you can specify which
+# returns the energy of a specified particle in a given state
+# optional: if you have more than one particle in a given state, you can specify which
 #           one you want to consider with the which_particle parameter; default value
 #           is the first particle found
 # raises:   ValueError if no events found matching input parameters
 #           IndexError if requested which_particle index does not exist (this might
 #           occur if there are less photons in the given state than the requested
 #           index)
-def getPhotonEnergy(event_data,event_state,which_particle=0):
-    energy = _extractEventSubset(event_data,energy_index,event_state,photon)
+def getEnergy(event_data,event_state,particle_label,which_particle=0):
+    energy = _extractEventSubset(event_data,energy_index,event_state,particle_label)
     if len(energy) == 0:
-        raise ValueError('no photons found in the given state')
+        raise ValueError('no particles found in the given state')
     if which_particle >= len(energy):
-        raise IndexError('photon instance index out of range')
+        raise IndexError('particle instance index out of range')
     return energy[which_particle]
 
+# returns the energy of a photon for backwards compatibility
+def getPhotonEnergy(event_data,event_state,which_particle=0):
+    return getEnergy(event_data,event_state,photon,which_particle)
 
+# returns the energy of the z for backwards compatibility
+def getZEnergy(event_data,event_state,which_particle=0):
+    return getEnergy(event_data,event_state,z,which_particle)
+
+
+#--- deprecated ---#
 # alternate function to return the energy of a specified photon in a given state
 # note:     _detPhotonEnergy is less efficient than getPhotonEnergy, so getPhotonEnergy
 #           will be used by default
