@@ -1,4 +1,5 @@
 import cuts
+import get_cross_section
 
 # open input/output files
 filename = input('Enter event file for modified cross section: ').strip()
@@ -7,8 +8,11 @@ cut_file = open('nothing.txt','w')   #write only mode for output
 if filename == 'quit':              #quit if user wants to exit
     quit()
 
+event_file = 0
+
 try:                                #try to open file with inputted filename
     event_file = open(filename,'r')
+    print('Initial cross section: ' + str(get_cross_section.getCrossSection(event_file)))
 except IOError:                     #give error message, exit if file not found
     print(filename + ' not found. Try again with corrected input.')
     quit()
