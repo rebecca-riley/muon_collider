@@ -3,11 +3,7 @@ import get_cross_section
 
 # open input/output files
 # filename = input('Enter event file for modified cross section: ').strip()
-filenames = ['ee_z_low_500.lhe','ee_sm_250.lhe','ee_sm_500.lhe','ee_small_250.lhe',
-             'ee_low_250.lhe','ee_low_500.lhe','ee_xa_sm_250.lhe','ee_xa_low_250.lhe',
-             'mu_a_low_6500.lhe','mu_h_low_6500.lhe','mu_sm_1000.lhe','mu_sm_10000.lhe',
-             'mu_low_6500.lhe','mu_z_low_6500.lhe','mu_sm_500.lhe','mu_low_500.lhe',
-             'mu_xa_sm_250.lhe']
+filenames = open('files.txt','r')
 cut_file = open('nothing.txt','w')   #write only mode for output
 out_file = open('out.txt','w')
 
@@ -17,7 +13,8 @@ out_file = open('out.txt','w')
 event_file = 0
 initial_cross_section = 0
 
-for filename in filenames:
+for line in filenames:
+    filename = line.strip()
     try:                                #try to open file with inputted filename
         event_file = open(filename,'r')
         print(filename.upper())
