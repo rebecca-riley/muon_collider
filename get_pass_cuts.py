@@ -6,6 +6,15 @@ import get_cross_section
 filenames = open('files.txt','r')
 out_file = open('out.txt','w')
 
+# provide output format for out.txt
+out_file.write('OUTPUT FORMAT' + '\n')
+out_file.write('[FILENAME]' + '\n')
+out_file.write('[initial cross section]' + '\n')
+out_file.write('[percent of events passing first cut -- 1 = 1%, not 100%]' + '\n')
+out_file.write('[new cross section]' + '\n')
+out_file.write('[percent of events passing both cuts]' + '\n')
+out_file.write('[final cross section]' + '\n\n')
+
 # if filename == 'quit':              #quit if user wants to exit
 #     quit()
 
