@@ -9,6 +9,7 @@ filenames = ['ee_z_low_500.lhe','ee_sm_250.lhe','ee_sm_500.lhe','ee_small_250.lh
              'mu_low_6500.lhe','mu_z_low_6500.lhe','mu_sm_500.lhe','mu_low_500.lhe',
              'mu_xa_sm_250.lhe']
 cut_file = open('nothing.txt','w')   #write only mode for output
+out_file = open('out.txt','w')
 
 # if filename == 'quit':              #quit if user wants to exit
 #     quit()
@@ -20,8 +21,10 @@ for filename in filenames:
     try:                                #try to open file with inputted filename
         event_file = open(filename,'r')
         print(filename.upper())
+        out_file.write(filename.upper() + '\n')
         initial_cross_section = float(get_cross_section.getCrossSection(event_file))
         print('Initial cross section: ' + str(initial_cross_section))
+        out_file.write(str(initial_cross_section) + '\n')
     except IOError:                     #give error message, exit if file not found
         print(filename + ' not found. Try again with corrected input.')
         quit()
@@ -37,10 +40,14 @@ for filename in filenames:
     number_remaining = len(event_list) - fails_cut[1]
     percent_passing = number_remaining/total_events
     print('Percent of events passing first cut: ' + str(percent_passing*100))
+    out_file.write(str(percent_passing*100) + '\n')
     print('Modified cross section: ' + str(initial_cross_section*percent_passing))
+    out_file.write(str(initial_cross_section*percent_passing) + '\n')
     number_remaining = number_remaining - fails_cut[2]
     percent_passing = number_remaining/total_events
     print('Percent of events passing both cuts: ' + str(percent_passing*100))
+    out_file.write(str(percent_passing*100) + '\n')
     print('Modified cross section: ' + str(initial_cross_section*percent_passing))
+    out_file.write(str(initial_cross_section*percent_passing) + '\n')
 
     event_file.close()              #close open files
