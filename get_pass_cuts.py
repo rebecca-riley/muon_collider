@@ -4,7 +4,6 @@ import get_cross_section
 # open input/output files
 # filename = input('Enter event file for modified cross section: ').strip()
 filenames = open('files.txt','r')
-cut_file = open('nothing.txt','w')   #write only mode for output
 out_file = open('out.txt','w')
 
 # if filename == 'quit':              #quit if user wants to exit
@@ -25,7 +24,7 @@ for line in filenames:
         print(filename + ' not found. Try again with corrected input.')
         quit()
 
-    event_list = cuts.processEvents(event_file,cut_file) #extract events from input file
+    event_list = cuts.processEvents(event_file) #extract events from input file
     total_events = len(event_list)
 
     fails_cut = [0, 0, 0]
