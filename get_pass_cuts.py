@@ -20,7 +20,6 @@ for line in filenames:
         print(filename.upper())
         out_file.write(filename.upper() + '\n')
         initial_cross_section = float(get_cross_section.getCrossSection(event_file))
-        print('Initial cross section: ' + str(initial_cross_section))
         out_file.write(str(initial_cross_section) + '\n')
     except IOError:                     #give error message, exit if file not found
         print(filename + ' not found. Try again with corrected input.')
@@ -28,7 +27,6 @@ for line in filenames:
 
     event_list = cuts.processEvents(event_file,cut_file) #extract events from input file
     total_events = len(event_list)
-    print('Number of events read: ' + str(total_events))
 
     fails_cut = [0, 0, 0]
     for event in event_list:      #determine for each event if it passes cuts
@@ -36,15 +34,15 @@ for line in filenames:
 
     number_remaining = len(event_list) - fails_cut[1]
     percent_passing = number_remaining/total_events
-    print('Percent of events passing first cut: ' + str(percent_passing*100))
     out_file.write(str(percent_passing*100) + '\n')
-    print('Modified cross section: ' + str(initial_cross_section*percent_passing))
     out_file.write(str(initial_cross_section*percent_passing) + '\n')
     number_remaining = number_remaining - fails_cut[2]
     percent_passing = number_remaining/total_events
     print('Percent of events passing both cuts: ' + str(percent_passing*100))
     out_file.write(str(percent_passing*100) + '\n')
-    print('Modified cross section: ' + str(initial_cross_section*percent_passing))
+    print('Final modified cross section: ' + str(initial_cross_section*percent_passing))
     out_file.write(str(initial_cross_section*percent_passing) + '\n')
 
     event_file.close()              #close open files
+
+print('Details written to out.txt.')
