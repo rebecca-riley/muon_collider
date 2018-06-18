@@ -52,6 +52,7 @@ def passesCuts(event,flags_enabled=False):
         else:
             return False
 
+    # event passed all cuts
     if flags_enabled:
         return 0
     else:
