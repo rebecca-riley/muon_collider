@@ -4,8 +4,7 @@ def getCrossSection(event_file):
             return line.split()[5]
 
 def main():
-    # list of files to get cross section for
-    files = open('files.txt','r')
+    files = open('files.txt','r')           # list of files to get cross section for
     print('All cross sections given in picobarns.')
 
     for line in files:
