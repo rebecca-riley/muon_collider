@@ -30,7 +30,9 @@ final_state = '1'
 
 #--- cut functions ---#
 
-# boolean function indicating whether event passes or fails cuts
+# returns boolean indicating whether event passes (true) or fails (false) cuts
+# optional: pass True for flag_enabled to have number returned indicating at which
+#           cut the event failed (0 = failed no cuts, 1 = failed first cut, etc.)
 def passesCuts(event,flags_enabled=False):
     event_data = getEventData(event)  #retrieve relevant data
 
