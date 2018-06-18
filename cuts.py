@@ -268,7 +268,7 @@ def main():
 
     print(str(k) + ' events written to ' + filename_out)    #print number of events
                                                             #written out
-    event_file.close()              #close open files
+    event_file.close()                  #close open files
     cut_file.close()
 
 if __name__ == '__main__':
