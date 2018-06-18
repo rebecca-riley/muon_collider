@@ -70,6 +70,7 @@ def plotReadIn():
         print('initial angle between particles: aglinit')
         print('final photon energy: ptnenfin')
         print('initial photon energy: ptneninit')
+        print('final z energy: zenfin')
         return plotReadIn()             #prompt for input again
 
     return plots                        #return list of desired plotting options
@@ -78,7 +79,7 @@ def plotReadIn():
 def processSelection(plots,file_data):
     for option in plots:        #if any option is not recognized, reprompt for input
         if option not in {'massfin','massinit','massfinpar','massinitpar','aglfin',\
-                          'aglinit','ptnenfin','ptneninit','all','zenfin'}:
+                          'aglinit','ptnenfin','ptneninit','zenfin','all'}:
             print('The plot option you specified could not be found.')
             processSelection(plotReadIn(),file_data)
             return
