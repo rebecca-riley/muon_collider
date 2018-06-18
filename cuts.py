@@ -209,12 +209,6 @@ def extractInitialEvents(event_data,index_to_extract,particle_code=null_particle
 def extractFinalEvents(event_data,index_to_extract,particle_code=null_particle):
     return _extractEventSubset(event_data,index_to_extract,final_state,particle_code)
 
-# returns a list of data points associated with intermediate particles for a specified index
-# optional: specify particle identity; if no particle specified, returns all
-#           intermediate events
-def extractIntermediateEvents(event_data,index_to_extract,particle_code=null_particle):
-    return _extractEventSubset(event_data,index_to_extract,mid_state,particle_code)
-
 
 #--- processing functions ---#
 
