@@ -1,6 +1,7 @@
 #### IMPORT DECLARATIONS ####
 from vector import Vector
 import math
+import tabCompleter
 from progressbar import ProgressBar
 pbar = ProgressBar()
 
@@ -240,6 +241,12 @@ def processEvents(event_file,cut_file=None):
 #### EXECUTION SUBROUTINE ####
 
 def main():
+    # configure tab completer
+    tab_completer = tabCompleter.tabCompleter()
+    tabCompleter.readline.set_completer_delims('\t')
+    tabCompleter.readline.parse_and_bind("tab: complete")
+    tabCompleter.readline.set_completer(tab_completer.pathCompleter)
+
     # open input/output files
     filename = input('Enter event file to cut on: ').strip()
 
