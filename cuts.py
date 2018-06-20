@@ -241,10 +241,7 @@ def processEvents(event_file,cut_file=None):
 #### EXECUTION SUBROUTINE ####
 
 def main():
-    # configure tab completer
-    tabCompleter.tabCompleter()
-
-    # open input/output files
+    tabCompleter.tabCompleter()         # configure tab completer
     filename = input('Enter event file to cut on: ').strip()
 
     if filename == 'quit':              #quit if user wants to exit
