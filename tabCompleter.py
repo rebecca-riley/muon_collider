@@ -12,6 +12,11 @@ class tabCompleter(object):
     http://stackoverflow.com/questions/5637124/tab-completion-in-pythons-raw-input
     """
 
+    def __init__(self):
+        readline.set_completer_delims('\t')
+        readline.parse_and_bind("tab: complete")
+
+
     def pathCompleter(self,text,state):
         """ 
         This is the tab completer for systems paths.
