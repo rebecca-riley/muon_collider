@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import cuts
+import tabCompleter
 from progressbar import AdaptiveETA, Bar, Percentage, ProgressBar, SimpleProgress
 
 
@@ -18,6 +19,7 @@ transparency = 0.5
 
 # returns list of event lists, one event list per specified file
 def fileReadIn():
+    tabCompleter.tabCompleter()         # configure tab completer
     file_input = input('Enter event files to plot: ').split()   #event files must be
                                                     #entered by their full path name
     if 'quit' in file_input:            #quit if user wants to exit
