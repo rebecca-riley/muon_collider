@@ -242,8 +242,7 @@ def processEvents(event_file,cut_file=None):
 
 def main():
     # configure tab completer
-    tab_completer = tabCompleter.tabCompleter()
-    tabCompleter.readline.set_completer(tab_completer.pathCompleter)
+    tabCompleter.tabCompleter()
 
     # open input/output files
     filename = input('Enter event file to cut on: ').strip()

@@ -10,11 +10,14 @@ class tabCompleter(object):
     
     Partially taken from:
     http://stackoverflow.com/questions/5637124/tab-completion-in-pythons-raw-input
+
+    --Modified by Rebecca Riley, 06/20/2018
     """
 
     def __init__(self):
         readline.set_completer_delims('\t')
         readline.parse_and_bind("tab: complete")
+        readline.set_completer(self.pathCompleter)
 
 
     def pathCompleter(self,text,state):
