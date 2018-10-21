@@ -12,4 +12,4 @@ This is a project by
 
 of the University of California, Irvine.
 
-muon_collider contains Python .lhe event processing and selection (cuts.py) and plotting (plots.py) scripts (author: R.Riley, rriley1@uci.edu). It also contains a Python script to calculate required luminosity given various parameters (author: J.Howard, jnhoward@uci.edu).
+muon_collider contains Python .lhe event processing and selection (cuts.py) and plotting (plots.py) scripts (author: R.Riley, rriley1@uci.edu). It also contains a Python script (minLumCalc.py) to calculate required luminosity given various parameters (author: J.Howard, jnhoward@uci.edu).
